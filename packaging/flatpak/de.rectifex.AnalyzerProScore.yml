@@ -48,8 +48,12 @@ modules:
         # uvicorn was installed there by the python-deps module.
         # We run the server in the background and point it to the backend code in /app/app.
         uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir /app &
-        # Give the server a moment to start up before opening the browser.
-        sleep 2
+        # Poll the health endpoint until the server is ready.
+        echo "Waiting for backend server to start..."
+        while ! curl -s --fail http://127.0.0.1:8000/api/v1/health > /dev/null; do
+            sleep 1
+        done
+        echo "Backend server started."
         # Open the web UI in the user's default browser.
         xdg-open http://127.0.0.1:8000/
         EOF

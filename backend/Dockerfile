@@ -10,8 +10,10 @@ RUN pip install --no-cache-dir poetry
 # Copy only the dependency definition file to leverage Docker layer caching
 COPY pyproject.toml ./
 
-# Generate the lock file based on pyproject.toml
-# This ensures a reproducible build inside the container
+# Generate the lock file based on pyproject.toml.
+# NOTE: In a typical production workflow, the poetry.lock file would be
+# committed to the repository. This step is a workaround for development
+# environments where pre-generating the lock file is not feasible.
 RUN poetry lock
 
 # Install project dependencies using the generated lock file
