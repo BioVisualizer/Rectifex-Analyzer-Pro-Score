@@ -1,0 +1,62 @@
+app-id: de.rectifex.AnalyzerProScore
+runtime: org.kde.Platform
+runtime-version: '6.7'
+sdk: org.kde.Sdk
+# Specify the Node.js SDK extension needed for the build.
+# This must match the runtime version branch (e.g., 6.7 runtime is based on 23.08 sdk).
+build-extensions:
+  - org.freedesktop.Sdk.Extension.node18//23.08
+command: start-app.sh
+finish-args:
+  # Grant network access for API calls
+  - --share=network
+  # Allow access to system themes and icons for a native look
+  - --share=ipc
+  - --socket=fallback-x11
+  - --socket=wayland
+
+modules:
+  # Module 1: Install Python dependencies into the /app prefix
+  - name: python-deps
+    buildsystem: simple
+    build-commands:
+      # This installs packages like uvicorn into /app/bin/
+      - pip3 install --prefix=/app ujson fastapi uvicorn[standard] sqlalchemy psycopg2-binary pydantic-settings
+
+  # Module 2: Build and install the application itself
+  - name: rectifex-analyzer
+    buildsystem: simple
+    build-commands:
+      # ----- Frontend Build -----
+      # The node extension places 'npm' in /usr/lib/sdk/node18/bin, which flatpak-builder adds to the PATH.
+      # We build the frontend first.
+      - cd frontend && npm install && npm run build && cd ..
+      # Copy the built frontend assets to the final destination.
+      - cp -r frontend/dist /app/static
+
+      # ----- Backend Install -----
+      # Copy the backend source code into the /app directory.
+      - cp -r backend/app /app/app
+
+      # ----- Startup Script -----
+      # Create the executable script that will launch the application.
+      - mkdir -p /app/bin
+      - |
+        cat <<EOF > /app/bin/start-app.sh
+        #!/bin/sh
+        # The /app/bin directory is automatically added to the PATH by Flatpak.
+        # uvicorn was installed there by the python-deps module.
+        # We run the server in the background and point it to the backend code in /app/app.
+        uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir /app &
+        # Give the server a moment to start up before opening the browser.
+        sleep 2
+        # Open the web UI in the user's default browser.
+        xdg-open http://127.0.0.1:8000/
+        EOF
+      - chmod +x /app/bin/start-app.sh
+    sources:
+      # Source both the backend and frontend directories.
+      - type: dir
+        path: ../../backend
+      - type: dir
+        path: ../../frontend
