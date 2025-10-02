@@ -1,30 +1,47 @@
-# Rectifex Analyzer Pro-Score
-Dynamic Hybrid Scoring & Market Analysis Tool
-Rectifex Analyzer Pro-Score is more than a simple stock screener; it is your personalized, dynamic investment cockpit. The app is based on an advanced 12-Point Hybrid Scoring System that combines proven metrics from Value Analysis (inspired by Piotroski, Magic Formula) with current Market Dynamics (Momentum and Sentiment). The goal is to quickly and transparently identify companies in a crowded market that are both financially sound and currently purchasable under your specific risk tolerance.
+# Rectifex Analyzer Pro-Score (Version 3.0)
 
-🚀 Core Features
-Personalized Strategy via Sliders: The core of the application. The three main sliders transform complex financial metrics into intuitive thresholds that reflect your personal investment strategy:
+This repository contains the complete codebase for the Rectifex Analyzer Pro-Score, a desktop application designed for Kubuntu. It features a FastAPI backend for data logic and a React frontend for the user interface, all containerized with Docker for development and packaged with Flatpak for desktop deployment.
 
-"Quality Standard" (Safety vs. Speculation): Controls the requirements for financial security (e.g., Equity Ratio, stability of Cash Flow) and profitability (Return on Equity, Profit Margin). A higher standard aggressively filters for financially healthy companies.
+### Technical Stack
 
-"Valuation Approach" (Value vs. Growth): Defines the tolerance for high multiples such as the P/E Ratio (KGV) and the Price-to-Book Ratio (KBV). A focus on "Value" (low setting) strictly filters for cheaply valued stocks. "Growth" (high setting) accepts higher valuations for companies with strong expected earnings growth.
+*   **Backend:** Python 3.11+ with FastAPI & Poetry
+*   **Database:** PostgreSQL
+*   **Frontend:** React 18+ with TypeScript, Vite & Tailwind CSS
+*   **Containerization:** Docker & Docker Compose
+*   **Desktop Packaging:** Flatpak for Linux (Kubuntu/KDE Focus)
 
-"Momentum & Timing" (Long-term vs. Dynamic): Focuses on the relative price strength over the last 6 and 12 months, as well as the distance from the 52-week high. This helps determine the optimal buying time and recognize trend reversals early.
+-----
 
-Market Scan & Dynamic Top List: With one click, you simultaneously evaluate hundreds of stored stocks. The system performs an in-depth quantitative analysis and dynamically sorts the results by the achieved overall score. The generated top list immediately provides clear, rule-based recommendations (Buy, Hold, Sell). The control section is collapsible by default for optimal UX and can be refreshed at any time using the Refresh button.
+## Entwicklungsumgebung starten (via Docker)
 
-Transparency & Detailed Score: Upon selecting a ticker, you get a detailed view of the score (e.g., 7 out of 12 possible points). The app transparently shows which of the 12 underlying criteria were met (+1), which are neutral (0), and which disqualify the stock (-1). This builds confidence in the recommendation and serves as an excellent learning tool.
+1.  Stelle sicher, dass Docker und Docker Compose installiert sind.
+2.  Klone das Repository.
+3.  Führe im Hauptverzeichnis aus: `docker-compose up --build`
+4.  Das Frontend ist erreichbar unter `http://localhost:5173`.
+5.  Das Backend ist erreichbar unter `http://localhost:8000/docs`.
 
-⚠️ Important Limitations
-Data Source (Simulation): The current version of the app is a Proof of Concept running on simulated financial data. The displayed prices and metrics are not current or accurate in reality. For live usage, the implementation of a Backend Proxy (e.g., in Node.js or Python) is mandatory to fetch real-time financial data from API providers (like Yahoo Finance). Without this proxy, the data will not be current.
+## Flatpak-Anwendung für Kubuntu bauen und testen
 
-Logic & Industry Specifics: The thresholds used by the sliders are currently generic and apply across the broad market. For maximum precision, industry-specific logic (e.g., for banks, which naturally have lower equity ratios, or technology companies with typically higher P/E ratios) must be implemented and refined to ensure fair comparisons between sectors.
+1.  **Build-Tools installieren:**
+    ```bash
+    sudo apt update
+    sudo apt install flatpak flatpak-builder
+    ```
 
-Scaling and Speed: The speed of the market scan directly depends on the number of stocks queried and the latency of the data backend being used.
+2.  **KDE Platform-Runtime hinzufügen:**
+    ```bash
+    flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    flatpak install flathub org.kde.Platform//6.7 org.kde.Sdk//6.7
+    ```
 
-⚖️ Liability Disclaimer
-This is NOT investment advice.
+3.  **Anwendung bauen:**
+    Navigiere in das Verzeichnis `packaging/flatpak` und führe aus:
+    ```bash
+    flatpak-builder --force-clean build-dir de.rectifex.AnalyzerProScore.yml
+    ```
 
-The Rectifex Analyzer Pro-Score is a pure analysis and demonstration tool. The generated purchase recommendations are based on a quantitative, rule-based algorithm. The tool does not consider personal financial circumstances, risk tolerance, or specific market conditions.
-
-The use of the generated recommendations for actual investment decisions is solely at your own risk. The software operator assumes no liability for any direct or indirect losses resulting from the use or misinterpretation of the results. Always consult a certified financial advisor before making any investment decisions.
+4.  **Anwendung installieren und starten:**
+    ```bash
+    flatpak-builder --user --install --force-clean build-dir de.rectifex.AnalyzerProScore.yml
+    flatpak run de.rectifex.AnalyzerProScore
+    ```
