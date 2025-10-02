@@ -82,7 +82,7 @@ flatpak install flathub org.freedesktop.Sdk.Extension.node18//23.08 -y
 
 Clone this repository to your local machine. For example:
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/BioVisualizer/Rectifex-Analyzer-Pro-Score
 cd rectifex-analyzer-pro-score
 ```
 
