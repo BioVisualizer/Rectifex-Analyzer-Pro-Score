@@ -49,7 +49,11 @@ sudo apt-get update
 
 # Install Docker packages:
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+
+# Add your user to the 'docker' group to run Docker commands without sudo.
+sudo usermod -aG docker $USER
 ```
+> **Important:** You must **log out and log back in** for this change to take effect.
 
 ### 3. Install Flatpak Tools
 
@@ -66,7 +70,9 @@ Add the Flathub repository and install the necessary KDE and Node.js runtimes fo
 ```bash
 # Add the Flathub remote repository
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
+```
+> **Note:** If you have both system-wide and user-specific Flatpak installations, you may be prompted to choose one. For development purposes, selecting the `user` installation is a safe choice.
+```bash
 # Install the KDE Platform and SDK (Version 6.7)
 flatpak install flathub org.kde.Platform//6.7 org.kde.Sdk//6.7 -y
 
@@ -82,8 +88,7 @@ flatpak install flathub org.freedesktop.Sdk.Extension.node18//23.08 -y
 
 Clone this repository to your local machine. For example:
 ```bash
-git clone https://github.com/BioVisualizer/Rectifex-Analyzer-Pro-Score
-cd rectifex-analyzer-pro-score
+git clone https://github.com/BioVisualizer/Rectifex-Analyzer-Pro-Score && cd Rectifex-Analyzer-Pro-Score
 ```
 
 ### 2. Run the Development Environment
