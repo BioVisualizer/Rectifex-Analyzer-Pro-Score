@@ -91,12 +91,14 @@ cd rectifex-analyzer-pro-score
 This command starts the backend server, the frontend dev server, and the PostgreSQL database using Docker.
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 > **Note:** The first time you run this command, the backend service may take several minutes to build as it resolves Python dependencies and creates a `poetry.lock` file. Subsequent builds will be significantly faster.
 
 - **Frontend UI:** is available at `http://localhost:5173`
 - **Backend API Docs:** are available at `http://localhost:8000/docs`
+
+If the backend image fails to build with an error similar to `The option "--no-dev" does not exist`, your local Poetry version is newer than the one the original Dockerfile was written for. Update the `RUN poetry install` line in `backend/Dockerfile` (or pull the latest repository changes) so that it uses `poetry install --without dev --no-interaction --no-ansi`.
 
 ### 3. Build and Run the Desktop Application
 
@@ -116,3 +118,5 @@ flatpak-builder --user --install --force-clean build-dir de.rectifex.AnalyzerPro
 # Run the installed application
 flatpak run de.rectifex.AnalyzerProScore
 ```
+
+> **Troubleshooting:** Building the Flatpak manifest requires live access to PyPI in order to download Python wheels such as `ujson`. If you see repeated `Temporary failure in name resolution` messages or `No matching distribution found for ujson`, verify that your network connection allows outbound HTTPS traffic from the build environment.
