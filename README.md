@@ -84,6 +84,7 @@ Clone this repository to your local machine. For example:
 ```bash
 git clone https://github.com/BioVisualizer/Rectifex-Analyzer-Pro-Score
 cd Rectifex-Analyzer-Pro-Score
+```
 
 > **Tip:** Linux file and directory names are case-sensitive. If you see an
 > error such as `bash: cd: rectifex-analyzer-pro-score: No such file or
@@ -94,7 +95,6 @@ If you previously cloned the repository and now see
 an empty directory.`, either remove the existing directory with
 `rm -rf Rectifex-Analyzer-Pro-Score` (after confirming you no longer need its
 contents) or reuse the existing clone by running `cd Rectifex-Analyzer-Pro-Score`.
-```
 
 ### 2. Run the Development Environment
 
