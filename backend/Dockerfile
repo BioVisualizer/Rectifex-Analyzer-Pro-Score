@@ -18,7 +18,7 @@ RUN poetry lock
 
 # Install project dependencies using the generated lock file
 # Using --no-root to avoid installing the project itself, as we'll copy the source code in the next step
-RUN poetry config virtualenvs.create false && poetry install --without dev --no-interaction --no-ansi
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi --no-root
 
 # Copy the rest of the application's code
 COPY ./app ./app
